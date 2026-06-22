@@ -8,11 +8,12 @@ import Dashboard from './pages/Dashboard';
 import AlertsPage from './pages/Alerts';
 import CamerasPage from './pages/Cameras';
 import WatchlistPage from './pages/Watchlist';
+import UsersPage from './pages/Users';
 import Login from './pages/Login';
 import './index.css';
 
 function Layout() {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [activeAlertCount, setActiveAlertCount] = useState(0);
 
   useSocket(
@@ -31,6 +32,7 @@ function Layout() {
           <Route path="/alerts" element={<AlertsPage />} />
           <Route path="/cameras" element={<CamerasPage />} />
           <Route path="/watchlist" element={<WatchlistPage />} />
+          <Route path="/users" element={isAdmin ? <UsersPage /> : <Navigate to="/" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
