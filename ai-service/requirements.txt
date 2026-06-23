@@ -1,19 +1,20 @@
 # Core AI / CV
-ultralytics==8.1.0          # YOLOv8 — person detection
-opencv-python==4.9.0.80
-deepface==0.0.89            # Face recognition (ArcFace/Facenet backend)
-tensorflow-cpu==2.15.0      # Required by deepface (use tensorflow==2.15.0 if you have GPU+CUDA)
-numpy==1.26.4
+ultralytics          # YOLOv8 — person detection
+opencv-python
+deepface            # Face recognition (ArcFace/Facenet backend)
+tensorflow          # Required by deepface (use tensorflow-gpu or custom build if needed)
+numpy
 
 # Activity classification (optional layer)
-torch==2.2.0                # Use the CUDA wheel index if running with a GPU
-scikit-learn==1.4.0
+torch
+scikit-learn
 
 # Backend communication
-requests==2.31.0
-python-socketio==5.11.0
-python-dotenv==1.0.1
+requests
+python-socketio
+python-dotenv
 
 # Utilities
-Pillow==10.2.0
-imutils==0.5.4
+Pillow
+imutils
+
