@@ -31,11 +31,12 @@ class BackendClient:
 
     def send_camera_status(self, status="online"):
         try:
-            self.session.patch(
+            resp = self.session.patch(
                 f"{config.BACKEND_URL}/cameras/{config.CAMERA_ID}/status",
                 json={"status": status},
                 timeout=5,
             )
+            print(f"📡 Status update response: {resp.status_code} {resp.text}")
         except Exception as e:
             print(f"⚠️  Failed to update camera status: {e}")
 
