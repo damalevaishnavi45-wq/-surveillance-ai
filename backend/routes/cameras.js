@@ -52,6 +52,41 @@ router.delete('/:id', protect, restrictTo('admin'), async (req, res) => {
   }
 });
 
+// GET /api/cameras/:id/config — used by AI service to fetch stream URL dynamically
+router.get('/:id/config', protect, async (req, res) => {
+  try {
+    const camera = await Camera.findOne({ cameraId: req.params.id });
+    if (!camera) return res.status(404).json({ success: false, message: 'Camera not found' });
+    res.json({
+      success: true,
+      config: {
+        cameraId: camera.cameraId,
+        name: camera.name,
+        streamUrl: camera.streamUrl,
+        alertThreshold: camera.alertThreshold,
+        fps: camera.fps,
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// PATCH /api/cameras/:id — update stream URL and other settings from dashboard
+router.patch('/:id', protect, restrictTo('admin', 'supervisor'), async (req, res) => {
+  try {
+    const camera = await Camera.findOneAndUpdate(
+      { cameraId: req.params.id },
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!camera) return res.status(404).json({ success: false, message: 'Camera not found' });
+    res.json({ success: true, camera });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // GET /api/cameras/stats
 router.get('/stats', protect, async (req, res) => {
   try {

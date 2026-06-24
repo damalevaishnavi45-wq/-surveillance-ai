@@ -39,6 +39,7 @@ export const cameraAPI = {
   getAll: () => api.get('/cameras'),
   create: (data) => api.post('/cameras', data),
   updateStatus: (id, status) => api.patch(`/cameras/${id}/status`, { status }),
+  update: (id, data) => api.patch(`/cameras/${id}`, data),
   delete: (id) => api.delete(`/cameras/${id}`),
   getStats: () => api.get('/cameras/stats'),
 };

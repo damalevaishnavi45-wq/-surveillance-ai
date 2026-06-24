@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Bell, Camera, Users, ShieldAlert, LogOut, Activity, Shield } from 'lucide-react';
+import { LayoutDashboard, Bell, Camera, Users, ShieldAlert, LogOut, Activity } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const NAV = [
@@ -8,18 +8,14 @@ const NAV = [
   { to: '/alerts', icon: Bell, label: 'Alerts' },
   { to: '/cameras', icon: Camera, label: 'Cameras' },
   { to: '/watchlist', icon: Users, label: 'Watchlist' },
+  { to: '/activity', icon: Activity, label: 'Activity Log' },
 ];
 
 export default function Sidebar({ alertCount = 0 }) {
-  const { user, logout, isAdmin } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => { logout(); navigate('/login'); };
-
-  const menuItems = [...NAV];
-  if (isAdmin) {
-    menuItems.push({ to: '/users', icon: Shield, label: 'Users' });
-  }
 
   return (
     <aside className="sidebar">
@@ -38,7 +34,7 @@ export default function Sidebar({ alertCount = 0 }) {
 
       {/* Nav */}
       <nav style={{ flex: 1, padding: '12px 10px', display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {menuItems.map(({ to, icon: Icon, label }) => (
+        {NAV.map(({ to, icon: Icon, label }) => (
           <NavLink key={to} to={to} end={to === '/'}
             style={({ isActive }) => ({
               display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px',

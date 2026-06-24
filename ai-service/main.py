@@ -68,7 +68,25 @@ def main():
     if face_recognizer:
         face_recognizer.refresh_watchlist(backend.fetch_watchlist())
 
-    source = int(config.CAMERA_SOURCE) if config.CAMERA_SOURCE.isdigit() else config.CAMERA_SOURCE
+    # Fetch stream URL dynamically from backend (set by admin in dashboard)
+    stream_url = config.CAMERA_SOURCE  # fallback to .env value
+    try:
+        resp = backend.session.get(
+            f"{config.BACKEND_URL}/cameras/{config.CAMERA_ID}/config", timeout=10
+        )
+        if resp.status_code == 200:
+            cam_config = resp.json().get("config", {})
+            if cam_config.get("streamUrl"):
+                stream_url = cam_config["streamUrl"]
+                print(f"📡 Stream URL loaded from dashboard: {stream_url}")
+            else:
+                print(f"⚠️  No stream URL in dashboard for {config.CAMERA_ID} — using .env fallback: {stream_url}")
+        else:
+            print(f"⚠️  Could not fetch camera config — using .env fallback: {stream_url}")
+    except Exception as e:
+        print(f"⚠️  Camera config fetch failed ({e}) — using .env fallback: {stream_url}")
+
+    source = int(stream_url) if str(stream_url).isdigit() else stream_url
     cap = cv2.VideoCapture(source)
 
     if not cap.isOpened():
