@@ -60,6 +60,7 @@ def main():
         print("⚠️  Continuing without backend connection — alerts will only print locally")
 
     backend.send_camera_status("online")
+    print(f"📡 Camera heartbeat sent — marking {config.CAMERA_ID} online")
 
     detector = PersonDetector()
     face_recognizer = FaceRecognizer() if config.ENABLE_FACE_RECOGNITION else None
@@ -98,6 +99,7 @@ def main():
 
     frame_count = 0
     last_watchlist_refresh = time.time()
+    last_heartbeat = time.time()
 
     try:
         while True:
@@ -116,10 +118,15 @@ def main():
                         break
                 continue
 
-            # Refresh watchlist cache every 60s in case admin added someone
+            # Refresh watchlist cache every 60s
             if face_recognizer and time.time() - last_watchlist_refresh > 60:
                 face_recognizer.refresh_watchlist(backend.fetch_watchlist())
                 last_watchlist_refresh = time.time()
+
+            # Send heartbeat every 10s to keep camera status "online"
+            if time.time() - last_heartbeat > 10:
+                backend.send_camera_status("online")
+                last_heartbeat = time.time()
 
             # 1) Person detection
             detections = detector.detect(frame)
